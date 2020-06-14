@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="MySQL - locacao@localhost" uuid="f62242f5-849b-4d96-9f0e-6f22dccfd5e2">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/locacao</jdbc-url>
+      <driver-properties>
+        <property name="serverTimezone" value="America/Sao_Paulo" />
+      </driver-properties>
+    </data-source>
+    <data-source source="LOCAL" name="db" uuid="0ebd04dd-22a8-4904-ba52-a4fd3ba3cd61">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\samue\Documents\UVV\Desenvolvimento Web\Interdisciplinar Web\trabalho-web-locacao\rest_api\db.sqlite3</jdbc-url>
+    </data-source>
+  </component>
+</project>
