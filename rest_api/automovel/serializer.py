@@ -5,7 +5,7 @@ from locacao import serializer
 
 class AutomovelSerializer(serializers.ModelSerializer):
 
-    locacoes = serializer.LocacaoSerializer(many=True)
+    locacoes = serializer.LocacaoSerializer(many=True, required=False)
 
     class Meta:
         model = models.Automovel
