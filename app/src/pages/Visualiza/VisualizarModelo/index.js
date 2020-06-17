@@ -44,7 +44,17 @@ export const VisualizarModeloView = () => {
                                         <tr>
                                             <td>{modelo.descricao}</td>
                                             <td><button className='btn btn-secondary'>Update</button></td>
-                                            <td><button className='btn btn-danger'>Delete</button></td>
+                                            <td><button className='btn btn-danger'
+                                                        onClick={async () => {
+                                                            const res = await api.delete(`${eps.deleteModelo}${modelo.id}`)
+                                                            console.log(res);
+                                                            if(res.status === 204 || res.status === "204"){
+                                                                setModelos(modelo.filter(m => m.id !== modelo.id))
+                                                            } else {
+                                                                alert("Erro ao tentar deletar um modelo.")
+                                                            }
+                                                        }}
+                                            >Delete</button></td>
                                         </tr>
                                     )) : null
                                 }

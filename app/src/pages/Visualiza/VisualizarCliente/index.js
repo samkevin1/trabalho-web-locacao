@@ -52,7 +52,17 @@ export const VisualizarClienteView = () => {
                                             <td>{cliente.cnh}</td>
                                             <td>{cliente.telefone}</td>
                                             <td><button className='btn btn-secondary'>Update</button></td>
-                                            <td><button className='btn btn-danger'>Delete</button></td>
+                                            <td><button className='btn btn-danger'
+                                                        onClick={async () => {
+                                                            const res = await api.delete(`${eps.deleteCliente}${cliente.id}`)
+                                                            console.log(res);
+                                                            if(res.status === 204 || res.status === "204"){
+                                                                setClientes(cliente.filter(m => m.id !== setClientes.id))
+                                                            } else {
+                                                                alert("Erro ao tentar deletar um cliente.")
+                                                            }
+                                                        }}
+                                            >Delete</button></td>
                                         </tr>
                                     )) : null
                                 }

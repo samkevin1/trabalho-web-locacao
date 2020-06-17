@@ -54,7 +54,17 @@ export const VisualizarAutomovelView = () => {
                                             <td>{automovel.cor}</td>
                                             <td>{automovel.tipo_combustivel}</td>
                                             <td><button className='btn btn-secondary'>Update</button></td>
-                                            <td><button className='btn btn-danger'>Delete</button></td>
+                                            <td><button className='btn btn-danger'
+                                                        onClick={async () => {
+                                                            const res = await api.delete(`${eps.deleteAutomovel}${automovel.id}`)
+                                                            console.log(res);
+                                                            if(res.status === 204 || res.status === "204"){
+                                                                setAutomoveis(automovel.filter(m => m.id !== automovel.id))
+                                                            } else {
+                                                                alert("Erro ao tentar deletar um automóvel.")
+                                                            }
+                                                        }}
+                                            >Delete</button></td>
                                         </tr>
                                     )) : null
                                 }
