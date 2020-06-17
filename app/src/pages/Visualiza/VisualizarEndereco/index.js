@@ -54,7 +54,17 @@ export const VisualizarEnderecoView = () => {
                                             <td>{endereco.numero}</td>
                                             <td>{endereco.cep}</td>
                                             <td><button className='btn btn-secondary'>Update</button></td>
-                                            <td><button className='btn btn-danger'>Delete</button></td>
+                                            <td><button className='btn btn-danger'
+                                                        onClick={async () => {
+                                                            const res = await api.delete(`${eps.deleteEndereco}${endereco.id}`)
+                                                            console.log(res);
+                                                            if(res.status === 204 || res.status === "204"){
+                                                                setEnderecos(endereco.filter(m => m.id !== endereco.id))
+                                                            } else {
+                                                                alert("Erro ao tentar deletar um endereço.")
+                                                            }
+                                                        }}
+                                            >Delete</button></td>
                                         </tr>
                                     )) : null
                                 }

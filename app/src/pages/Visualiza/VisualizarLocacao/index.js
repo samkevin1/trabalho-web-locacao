@@ -15,10 +15,10 @@ export const VisualizarLocacaoView = () => {
     useEffect((values) => {
         api.get(eps.listarLocacao, values). then((res)=>{
             console.log(res.data);
-            if(res.data){
+            if(res.status === 200 || res.status === "200"){
                 setLocacoes(res.data);
             }else{
-                setLocacoes([])
+                alert('Nenhuma locação cadastrada');
             }
         })
     }, []);
@@ -37,25 +37,13 @@ export const VisualizarLocacaoView = () => {
     useEffect((values) => {
         api.get(eps.listarAutomovel, values).then((res)=>{
             console.log(res.data);
-            if(res.data){
+            if(res.status === 200 || res.status === "200"){
                 setAutomovel(res.data);
             }else{
-                setAutomovel([])
+                alert('Nenhum automóvel encontrado')
             }
         })
     }, []);
-
-    function clienteId(id) {
-        cliente.map((cliente)=>(
-            cliente.id === id
-        ))
-    }
-
-    function automovelId(id) {
-        automovel.map((automovel)=>(
-            automovel.id === id
-        ))
-    }
 
     return(
         <>
@@ -70,7 +58,6 @@ export const VisualizarLocacaoView = () => {
                             <table className='table'>
                                 <thead>
                                    <tr>
-
                                        <th scope='col'>Data Locação</th>
                                        <th scope='col'>Valor Locação</th>
                                        <th scope='col'>KM</th>
@@ -91,7 +78,17 @@ export const VisualizarLocacaoView = () => {
                                             <td>{locacoes.valor_total}</td>
                                             <td>{locacoes.bonus}</td>
                                             <td><button className='btn btn-secondary'>Update</button></td>
-                                            <td><button className='btn btn-danger'>Delete</button></td>
+                                            <td><button className='btn btn-danger'
+                                                        onClick={async () => {
+                                                            const res = await api.delete(`${eps.deleteMarca}${locacoes.id}`)
+                                                            console.log(res);
+                                                            if(res.status === 204 || res.status === "204"){
+                                                                setLocacoes(locacoes.filter(m => m.id !== locacoes.id))
+                                                            } else {
+                                                                alert("Erro ao tentar deletar uma locação.")
+                                                            }
+                                                        }}
+                                            >Delete</button></td>
                                         </tr>
                                     )) : null
                                 }

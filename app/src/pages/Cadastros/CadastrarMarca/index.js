@@ -29,7 +29,7 @@ export const CadastrarMarcaView = () => {
                     console.log(res.data)
                     if (res.data.success) {
                         displayAlert(res.data.message, typesAlert.success);
-                        history.push('/', { user: res.data.user });
+                        history.push('/', { user: res.data });
                     } else {
                         displayAlert(res.data.message, typesAlert.error);
                     }
@@ -39,7 +39,7 @@ export const CadastrarMarcaView = () => {
             handleSubmit = {({ setSubmitting }) => {
                 this.setState({ isLogged: true });
                 setTimeout(() => {
-                    displayAlert.success("Cadastrado com sucesso!")
+                    alert("Cadastrado com sucesso!");
                     setSubmitting(false)
                 }, 1000)
             }}
@@ -85,10 +85,9 @@ export const CadastrarMarcaView = () => {
                                                            onChange={handleChange} />
                                                     {errors.descricao && touched.descricao && <small className='text-danger font-weight-bold'>{errors.descricao}</small>}
                                                 </FormGroup>
-
                                             </div>
                                         </div>
-                                        <div className="col-md-12 col-sm-12pd-t-50">
+                                        <div className="col-md-12 col-sm-12 pd-t-50">
                                             <Button className="btn btn-primary btn-login ml-0" type="submit" disabled={isSubmitting}>Cadastrar</Button>
                                         </div>
                                     </div>
