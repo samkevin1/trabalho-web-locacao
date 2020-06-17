@@ -5,7 +5,7 @@ from endereco import serializer
 
 class ClienteSerializer(serializers.ModelSerializer):
 
-    enderecos = serializer.EnderecoSerializer(many=True)
+    enderecos = serializer.EnderecoSerializer(many=True, required=False)
 
     class Meta:
         model = models.Cliente

@@ -40,7 +40,7 @@ class Endereco(models.Model):
 
 class Locacao(models.Model):
     dt_locacao = models.DateTimeField(auto_now_add=True)
-    dt_devolucao = models.DateTimeField(blank=True)
+    dt_devolucao = models.DateTimeField(blank=True, null=True)
     km = models.IntegerField()
     valor_calcao = models.FloatField()
     valor_km = models.FloatField()
