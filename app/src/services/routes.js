@@ -20,12 +20,12 @@ const Routes = () => {
                 <Route exact path={'/cadastrar/locacao'} component={CadastrarLocacao} />
                 <Route exact path={'/cadastrar/marca'} component={CadastrarMarca} />
                 <Route exact path={'/cadastrar/modelo'} component={CadastrarModelo} />
-                <Route exact path={'/visualizar/automovel'} component={VisualizarAutomovel} />
-                <Route exact path={'/visualizar/cliente'} component={VisualizarCliente} />
-                <Route exact path={'/visualizar/endereco'} component={VisualizarEndereco} />
-                <Route exact path={'/visualizar/locacao'} component={VisualizarLocacao} />
-                <Route exact path={'/visualizar/marca'} component={VisualizarMarca} />
-                <Route exact path={'/visualizar/modelo'} component={VisualizarModelo} />
+                <Route exact path={'/visualizar/automoveis'} component={VisualizarAutomovel} />
+                <Route exact path={'/visualizar/clientes'} component={VisualizarCliente} />
+                <Route exact path={'/visualizar/enderecos'} component={VisualizarEndereco} />
+                <Route exact path={'/visualizar/locacoes'} component={VisualizarLocacao} />
+                <Route exact path={'/visualizar/marcas'} component={VisualizarMarca} />
+                <Route exact path={'/visualizar/modelos'} component={VisualizarModelo} />
             </Switch>
         </BrowserRouter>
     )

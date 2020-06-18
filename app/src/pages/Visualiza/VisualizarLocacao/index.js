@@ -2,10 +2,14 @@ import React, {useState, useEffect} from 'react';
 import { displayAlert, typesAlert }  from "../../../components/alert/DisplayAlert";
 import api, { eps } from "../../../services/mainApi";
 import Content from '../../../components/content/Content';
-import { useHistory, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import DisplayError from '../../../components/displayError/index';
+import DisplayLoading from '../../../components/displayLoading/index';
 
 export const VisualizarLocacaoView = () => {
-
+    const [isLoading, setLoading] = useState(true);
+    const [isSuccess, setSuccess] = useState(false);
+    const [error, setError] = useState(false);
     const [locacoes, setLocacoes] = useState([]);
     const [cliente, setCliente] = useState([]);
     const [automovel, setAutomovel] = useState([]);
@@ -17,11 +21,20 @@ export const VisualizarLocacaoView = () => {
             console.log(res.data);
             if(res.status === 200 || res.status === "200"){
                 setLocacoes(res.data);
+                setLoading(false);
+                setError(false);
+                setSuccess(true);
             }else{
-                alert('Nenhuma locação cadastrada');
+                setLoading(false);
+                setError(true);
+                setSuccess(false);
             }
+        }).catch((err) => {
+            setLoading(false);
+            setError(true);
+            setSuccess(false)
         })
-    }, []);
+    }, []); 
 
     useEffect((values) => {
         api.get(eps.listarCliente, values). then((res)=>{
@@ -45,55 +58,61 @@ export const VisualizarLocacaoView = () => {
         })
     }, []);
 
+    const handleDelete = async (id) => {
+        const res = await api.delete(`${eps.deleteMarca}${id}`)
+        console.log(res);
+        if(res.status === 204 || res.status === "204"){
+            setLocacoes(locacoes.filter(l => l.id !== id))
+            displayAlert("Locação deletada com sucesso.", typesAlert.success);
+        } else {
+            displayAlert("Ocorreu um erro ao tentar deletar a locação.", typesAlert.error);
+        }
+    }
+
     return(
         <>
             <Content toggle={toggle} isOpen={isOpen}>
                 <div className='mb-3'>
-                    <h2>Locações Cadastrados</h2>
+                    <h2>Locações</h2>
                 </div>
                 <style>{'body { background-color: whitesmoke; }'}</style>
                 <div className='card'>
                     <div className='card-body'>
                         <div className='col-xl-12'>
+                            {isLoading && <DisplayLoading />}
+                            {error && <DisplayError />}
+                            {isSuccess && (
                             <table className='table'>
                                 <thead>
                                    <tr>
-                                       <th scope='col'>Data Locação</th>
-                                       <th scope='col'>Valor Locação</th>
+                                       <th scope='col'>Data locação</th>
+                                       <th scope='col'>Valor locação</th>
                                        <th scope='col'>KM</th>
                                        <th scope='col'>Valor KM</th>
-                                       <th scope='col'>ValorTotal</th>
+                                       <th scope='col'>Valor total</th>
                                        <th scope='col'>Bônus</th>
-                                       <th scope='col'/>
-                                       <th scope='col'/>
+                                       <th scope='col'>Ações</th>
                                    </tr>
                                 </thead>
-                                <tbody>{
-                                    locacoes.length > 0 ? locacoes.map((locacoes) => (
+                                <tbody class="text-center">
+                                    {locacoes.length > 0 ? locacoes.map((locacao) => (
                                         <tr>
-                                            <td>{locacoes.dt_locacao}</td>
-                                            <td>{locacoes.valor_locacao}</td>
-                                            <td>{locacoes.km}</td>
-                                            <td>{locacoes.valor_km}</td>
-                                            <td>{locacoes.valor_total}</td>
-                                            <td>{locacoes.bonus}</td>
-                                            <td><button className='btn btn-secondary'>Update</button></td>
-                                            <td><button className='btn btn-danger'
-                                                        onClick={async () => {
-                                                            const res = await api.delete(`${eps.deleteMarca}${locacoes.id}`)
-                                                            console.log(res);
-                                                            if(res.status === 204 || res.status === "204"){
-                                                                setLocacoes(locacoes.filter(m => m.id !== locacoes.id))
-                                                            } else {
-                                                                alert("Erro ao tentar deletar uma locação.")
-                                                            }
-                                                        }}
-                                            >Delete</button></td>
+                                            <td>{locacao.dt_locacao}</td>
+                                            <td>{locacao.valor_locacao}</td>
+                                            <td>{locacao.km}</td>
+                                            <td>{locacao.valor_km}</td>
+                                            <td>{locacao.valor_km * locacao.km}</td>
+                                            <td>{locacao.bonus}</td>
+                                            <td>
+                                                <button className='btn btn-danger' onClick={async () => await handleDelete(locacao.id)}>
+                                                    Deletar
+                                                </button>
+                                            </td>
                                         </tr>
-                                    )) : null
+                                    )) : <p className="text-center">Não há nenhum registro para ser exibido.</p>
                                 }
                                 </tbody>
-                            </table>
+                            </table>)}
                         </div>
                     </div>
                 </div>

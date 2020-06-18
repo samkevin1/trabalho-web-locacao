@@ -2,10 +2,14 @@ import React, {useState, useEffect} from 'react';
 import { displayAlert, typesAlert }  from "../../../components/alert/DisplayAlert";
 import api, { eps } from "../../../services/mainApi";
 import Content from '../../../components/content/Content';
-import { useHistory, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import DisplayError from '../../../components/displayError/index';
+import DisplayLoading from '../../../components/displayLoading/index';
 
 export const VisualizarEnderecoView = () => {
-
+    const [isLoading, setLoading] = useState(true);
+    const [isSuccess, setSuccess] = useState(false);
+    const [error, setError] = useState(false);
     const [enderecos, setEnderecos] = useState([]);
     const [isOpen, setOpen] = useState(true);
     const toggle = () => setOpen(!isOpen);
@@ -15,22 +19,46 @@ export const VisualizarEnderecoView = () => {
             console.log(res.data);
             if(res.data){
                 setEnderecos(res.data);
+                setLoading(false);
+                setError(false);
+                setSuccess(true);
             }else{
                 setEnderecos([])
+                setLoading(false);
+                setError(true);
+                setSuccess(false);
             }
+        }).catch((err) => {
+            setLoading(false);
+            setError(true);
+            setSuccess(false)
         })
     }, []);
+
+    const handleDelete = async(id) => {
+        const res = await api.delete(`${eps.deleteEndereco}${id}`)
+        console.log(res);
+        if(res.status === 204 || res.status === "204"){
+            setEnderecos(enderecos.filter(m => m.id !== id))
+            displayAlert("Endereço deletado com sucesso.", typesAlert.success);
+        } else {
+            displayAlert("Erro ao tentar deletar o endereço.", typesAlert.error);
+        }
+    }
 
     return(
         <>
             <Content toggle={toggle} isOpen={isOpen}>
                 <div className='mb-3'>
-                    <h2>Endereços Cadastrados</h2>
+                    <h2>Endereços cadastrados</h2>
                 </div>
                 <style>{'body { background-color: whitesmoke; }'}</style>
                 <div className='card'>
                     <div className='card-body'>
                         <div className='col-xl-12'>
+                            {isLoading && <DisplayLoading />}
+                            {error && <DisplayError />}
+                            {isSuccess && (
                             <table className='table'>
                                 <thead>
                                    <tr>
@@ -40,8 +68,7 @@ export const VisualizarEnderecoView = () => {
                                        <th scope='col'>Logradouro</th>
                                        <th scope='col'>Número</th>
                                        <th scope='col'>CEP</th>
-                                       <th scope='col'/>
-                                       <th scope='col'/>
+                                       <th scope='col'>Ações</th>
                                    </tr>
                                 </thead>
                                 <tbody>{
@@ -53,23 +80,16 @@ export const VisualizarEnderecoView = () => {
                                             <td>{endereco.logradouro}</td>
                                             <td>{endereco.numero}</td>
                                             <td>{endereco.cep}</td>
-                                            <td><button className='btn btn-secondary'>Update</button></td>
-                                            <td><button className='btn btn-danger'
-                                                        onClick={async () => {
-                                                            const res = await api.delete(`${eps.deleteEndereco}${endereco.id}`)
-                                                            console.log(res);
-                                                            if(res.status === 204 || res.status === "204"){
-                                                                setEnderecos(endereco.filter(m => m.id !== endereco.id))
-                                                            } else {
-                                                                alert("Erro ao tentar deletar um endereço.")
-                                                            }
-                                                        }}
-                                            >Delete</button></td>
+                                            <td>
+                                                <button className='btn btn-danger' onClick={async () => await handleDelete(endereco.id)}>
+                                                    Delete
+                                                </button>
+                                            </td>
                                         </tr>
-                                    )) : null
+                                    )) : <p className="text-center">Não há nenhum registro para ser exibido.</p>
                                 }
                                 </tbody>
-                            </table>
+                            </table>)}
                         </div>
                     </div>
                 </div>

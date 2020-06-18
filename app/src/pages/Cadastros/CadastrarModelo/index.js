@@ -34,7 +34,7 @@ export const CadastrarModeloView = () => {
         <Formik
             initialValues = {{
                 descricao:'',
-                marcas:''
+                marca: 0
             }}
 
             onSubmit={(values) => {
@@ -43,11 +43,13 @@ export const CadastrarModeloView = () => {
                     console.log(res.data)
                     if (res.data.success) {
                         displayAlert(res.data.message, typesAlert.success);
-                        history.push('/', { user: res.data.user });
+                        history.push('/visualizar/modelos');
                     } else {
                         displayAlert(res.data.message, typesAlert.error);
                     }
-                })
+                }).catch((err) => {
+                    displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
+                });
             }}
 
             handleSubmit = {({ setSubmitting }) => {
@@ -80,8 +82,8 @@ export const CadastrarModeloView = () => {
                     <>
                         <Content toggle={toggle} isOpen={isOpen}>
                             <div className='mt-5 mb-3'>
-                                <h2>Cadastrar Modelo</h2>
-                                <small className='text-muted font-weight-bold'>Campos obrigatórios (*)</small>
+                                <h2>Cadastro de modelos</h2>
+                                <small className='text-muted font-weight-bold'>Campos obrigatórios possuem (*)</small>
                             </div>
 
                             <style>{'body { background-color: whitesmoke; }'}</style>
@@ -90,8 +92,8 @@ export const CadastrarModeloView = () => {
                                     <div className="card-body">
                                         <div className="col-md-12 col-sm-12 ">
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Descrição (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Descrição (*): </Label>
                                                     <Input name="descricao"
                                                            value= {values.descricao}
                                                            type="text"
@@ -99,22 +101,24 @@ export const CadastrarModeloView = () => {
                                                            onChange={handleChange} />
                                                     {errors.descricao && touched.descricao && <small className='text-danger font-weight-bold'>{errors.descricao}</small>}
                                                 </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Marca (*)</Label>
-                                                    <select className="form-control col-sm-12">
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Marca (*): </Label>
+                                                    <select className="form-control col-sm-12" name="marca">
                                                         <option value='default' onChange={handleChange}>Selecione a marca do modelo...</option>
                                                         {marcas.length > 0 ? marcas.map : null}
                                                         {
                                                             marcas.length > 0 ? marcas.map((marca) => (
-                                                                <option key={marca.id} value={values.marcas} onChange={handleChange}>{marca.descricao}</option>
+                                                                <option key={marca.id} value={marca.id} onChange={handleChange}>{marca.descricao}</option>
                                                             )) : null
                                                         }
                                                     </select>
                                                 </FormGroup>
                                             </div>
                                         </div>
-                                        <div className="col-md-12 col-sm-12pd-t-50">
-                                            <Button className="btn btn-primary btn-login ml-0" type="submit" disabled={isSubmitting}>Cadastrar</Button>
+                                        <div className="col-md-12 col-sm-12 mt-20">
+                                            <button className="btn btn-dark btn-block ml-0" type="submit" disabled={isSubmitting}>
+                                                <h6 className='font-weight-bold pl-2'>Cadastrar</h6>
+                                            </button>
                                         </div>
                                     </div>
                                 </Form>
