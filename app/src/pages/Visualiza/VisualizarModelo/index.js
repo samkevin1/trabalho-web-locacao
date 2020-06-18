@@ -35,15 +35,14 @@ export const VisualizarModeloView = () => {
                                 <thead>
                                    <tr>
                                        <th scope='col'>Descrição</th>
-                                       <th scope='col'/>
-                                       <th scope='col'/>
+                                       <th scope='col'>Ações</th>
                                    </tr>
                                 </thead>
                                 <tbody>{
                                     modelos.length > 0 ? modelos.map((modelo) => (
                                         <tr>
                                             <td>{modelo.descricao}</td>
-                                            <td><button className='btn btn-secondary'>Update</button></td>
+                                        
                                             <td><button className='btn btn-danger'
                                                         onClick={async () => {
                                                             const res = await api.delete(`${eps.deleteModelo}${modelo.id}`)
@@ -54,7 +53,7 @@ export const VisualizarModeloView = () => {
                                                                 alert("Erro ao tentar deletar um modelo.")
                                                             }
                                                         }}
-                                            >Delete</button></td>
+                                            >Deletar</button></td>
                                         </tr>
                                     )) : null
                                 }
