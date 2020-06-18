@@ -43,11 +43,11 @@ export const CadastrarAutomovelView = () => {
 
             onSubmit={(values) => {
                 api.post(eps.cadastrarAutomovel, values).then((res) => {
-                    if (res.data.success) {
-                        displayAlert(res.data.message, typesAlert.success);
-                        history.push('/visualizar/automoveis', { user: res.data.user });
+                    if (res.data) {
+                        displayAlert(typesAlert.success);
+                        history.push('/visualizar/automoveis');
                     } else {
-                        displayAlert(res.data.message, typesAlert.error);
+                        displayAlert(typesAlert.error);
                     }
                 }).catch((err) => {
                     displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
@@ -58,6 +58,7 @@ export const CadastrarAutomovelView = () => {
                 setTimeout(() => {
                     displayAlert.handleSuccess("Cadastrado com sucesso!")
                     setSubmitting(false)
+                    history.push('/visualizar/automoveis');
                 }, 1000)
             }}
             validationSchema={validacaoForm}
@@ -152,7 +153,11 @@ export const CadastrarAutomovelView = () => {
                                         <div className="row">
                                             <FormGroup className="col-md-12 col-sm-12 text-left">
                                                 <Label className='font-weight-bold'>Modelo do automóvel (*):</Label>
-                                                <select className="form-control col-sm-12" value="modelo">
+                                                <select className="form-control col-sm-12"
+                                                        name='modelo'
+                                                        value={values.modelo}
+                                                        onChange={handleChange}
+                                                >
                                                     <option value='default' onChange={handleChange}>Selecione a modelo do automóvel...</option>
                                                     {
                                                         modelos.length > 0 ? modelos.map((modelo) => (

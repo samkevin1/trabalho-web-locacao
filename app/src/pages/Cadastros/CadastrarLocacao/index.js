@@ -48,18 +48,22 @@ export const CadastrarLocacaoView = () => {
                 valor_calcao:'',
                 valor_km:'',
                 bonus:'',
+                valor_total: '',
+                devolucao:0,
                 cliente: 0,
                 automovel: 0
             }}
 
             onSubmit={(values) => {
+                values.valor_total = values.km * values.valor_km
                 api.post(eps.cadastrarLocacao, values).then((res) => {
+                    console.log(values);
                     console.log(res.data)
-                    if (res.data.success) {
-                        displayAlert(res.data.message, typesAlert.success);
+                    if (res.data) {
+                        displayAlert(typesAlert.success);
                         history.push('/visualizar/locacoes');
                     } else {
-                        displayAlert(res.data.message, typesAlert.error);
+                        displayAlert(typesAlert.error);
                     }
                 }).catch((err) => {
                     displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
@@ -70,6 +74,7 @@ export const CadastrarLocacaoView = () => {
                 this.setState({ isLogged: true });
                 setTimeout(() => {
                     displayAlert.success("Cadastrado com sucesso!")
+                    history.push('/visualizar/locacoes');
                     setSubmitting(false)
                 }, 1000)
             }}
@@ -155,7 +160,11 @@ export const CadastrarLocacaoView = () => {
                                             <div className="row">
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>Automóvel (*): </Label>
-                                                    <select className="form-control col-sm-12" name="automovel">
+                                                    <select className="form-control col-sm-12"
+                                                            name="automovel"
+                                                            value={values.automovel}
+                                                            onChange={handleChange}
+                                                    >
                                                         <option value='default' onChange={handleChange}>Selecione o automóvel da locação...</option>
                                                         {automoveis.length > 0 ? automoveis.map : null}
                                                         {
@@ -167,8 +176,11 @@ export const CadastrarLocacaoView = () => {
                                                 </FormGroup>
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>Cliente (*): </Label>
-                                                    <select className="form-control col-sm-12">
-                                                        <option value='default' name="cliente" onChange={handleChange}>Selecione o cliente da locação...</option>
+                                                    <select className="form-control col-sm-12"
+                                                            name='cliente'
+                                                            onchange={handleChange}
+                                                    >
+                                                        <option value='default' onChange={handleChange}>Selecione o cliente da locação...</option>
                                                         {clientes.length > 0 ? clientes.map : null}
                                                         {
                                                             clientes.length > 0 ? clientes.map((cliente) => (

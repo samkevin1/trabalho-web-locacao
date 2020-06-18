@@ -27,11 +27,11 @@ export const CadastrarMarcaView = () => {
             onSubmit={(values) => {
                 api.post(eps.cadastrarMarca, values).then((res) => {
                     console.log(res.data)
-                    if (res.data.success) {
-                        displayAlert(res.data.message, typesAlert.success);
+                    if (res.data) {
+                        displayAlert(typesAlert.success);
                         history.push('/visualizar/marcas');
                     } else {
-                        displayAlert(res.data.message, typesAlert.error);
+                        displayAlert(typesAlert.error);
                     }
                 })
             }}
@@ -41,6 +41,7 @@ export const CadastrarMarcaView = () => {
                 setTimeout(() => {
                     alert("Cadastrado com sucesso!");
                     setSubmitting(false)
+                    history.push('/visualizar/marcas');
                 }, 1000)
             }}
 

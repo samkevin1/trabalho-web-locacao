@@ -45,11 +45,11 @@ export const CadastrarEnderecoView = () => {
             onSubmit={(values) => {
                 api.post(eps.cadastrarEndereco, values).then((res) => {
                     console.log(res.data)
-                    if (res.data.success) {
-                        displayAlert(res.data.message, typesAlert.success);
+                    if (res.data) {
+                        displayAlert(typesAlert.success);
                         history.push('/visualizar/enderecos');
                     } else {
-                        displayAlert(res.data.message, typesAlert.error);
+                        displayAlert(typesAlert.error);
                     }
                 }).catch((err) => {
                     displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
@@ -61,6 +61,7 @@ export const CadastrarEnderecoView = () => {
                 setTimeout(() => {
                     displayAlert.success("Cadastrado com sucesso!")
                     setSubmitting(false)
+                    history.push('/visualizar/enderecos');
                 }, 1000)
             }}
             validationSchema={validacaoForm}
@@ -92,7 +93,7 @@ export const CadastrarEnderecoView = () => {
                                             <div className="row">
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>Logradouro (*): </Label>
-                                                    <Input name="nome"
+                                                    <Input name="logradouro"
                                                            value= {values.logradouro}
                                                            type="text"
                                                            placeholder="Insira o logradouro do endereço..."
@@ -112,7 +113,7 @@ export const CadastrarEnderecoView = () => {
                                             <div className="row">
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>CEP (*): </Label>
-                                                    <Input name="cpf"
+                                                    <Input name="cep"
                                                            value= {values.cep}
                                                            type="text"
                                                            placeholder="Insira o CEP do endereço..."
@@ -121,27 +122,17 @@ export const CadastrarEnderecoView = () => {
                                                     {errors.cep && touched.cep && <small className='text-danger font-weight-bold'>{errors.cep}</small>}
                                                 </FormGroup>
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
-                                                    <Label className='font-weight-bold'>CEP (*): </Label>
-                                                    <Input name="cep"
-                                                           value= {values.CEP}
-                                                           type="text"
-                                                           placeholder="Insira o CEP do enderço..."
-                                                           onChange={handleChange}
-                                                    />
-                                                    {errors.cep && touched.cep && <small className='text-danger font-weight-bold'>{errors.cep}</small>}
-                                                </FormGroup>
-                                            </div>
-                                            <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>Bairro (*): </Label>
                                                     <Input name="bairro"
-                                                           value= {values.cep}
+                                                           value= {values.bairro}
                                                            type="text"
                                                            placeholder="Insira o bairro do endereço..."
                                                            onChange={handleChange}
                                                     />
                                                     {errors.bairro && touched.bairro && <small className='text-danger font-weight-bold'>{errors.bairro}</small>}
                                                 </FormGroup>
+                                            </div>
+                                            <div className="row">
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>Cidade (*): </Label>
                                                     <Input name="cidade"
@@ -151,6 +142,16 @@ export const CadastrarEnderecoView = () => {
                                                            onChange={handleChange}
                                                     />
                                                     {errors.cidade && touched.cidade && <small className='text-danger font-weight-bold'>{errors.cidade}</small>}
+                                                </FormGroup>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>País (*): </Label>
+                                                    <Input name="pais"
+                                                           value= {values.pais}
+                                                           type="text"
+                                                           placeholder="Insira o país do endereço..."
+                                                           onChange={handleChange}
+                                                    />
+                                                    {errors.pais && touched.pais && <small className='text-danger font-weight-bold'>{errors.pais}</small>}
                                                 </FormGroup>
                                             </div>
                                             <div className="row">
@@ -165,20 +166,12 @@ export const CadastrarEnderecoView = () => {
                                                     {errors.estado && touched.estado && <small className='text-danger font-weight-bold'>{errors.estado}</small>}
                                                 </FormGroup>
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
-                                                    <Label className='font-weight-bold'>País (*): </Label>
-                                                    <Input name="pais"
-                                                           value= {values.pais}
-                                                           type="text"
-                                                           placeholder="Insira o país do endereço..."
-                                                           onChange={handleChange}
-                                                    />
-                                                    {errors.pais && touched.pais && <small className='text-danger font-weight-bold'>{errors.pais}</small>}
-                                                </FormGroup>
-                                            </div>
-                                            <div className='row'>
-                                                <FormGroup className="col-md-12 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>Cliente (*): </Label>
-                                                    <select className="form-control col-sm-12" name="cliente">
+                                                    <select className="form-control col-sm-12"
+                                                            name="cliente"
+                                                            value={values.cliente}
+                                                            onChange={handleChange}
+                                                    >
                                                         <option value='default' onChange={handleChange}>Selecione o cliente da locação...</option>
                                                         {clientes.length > 0 ? clientes.map : null}
                                                         {
@@ -189,6 +182,7 @@ export const CadastrarEnderecoView = () => {
                                                     </select>
                                                 </FormGroup>
                                             </div>
+
                                         </div>
                                         <div className="col-md-12 col-sm-12 mt-52">
                                             <button className="btn btn-dark btn-block ml-0" type="submit" disabled={isSubmitting}>

@@ -64,6 +64,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True  # If this is used then `CORS_ORIGIN_WHITELIST` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
+USE_TZ = True
 
 ROOT_URLCONF = 'rest_api.urls'
 

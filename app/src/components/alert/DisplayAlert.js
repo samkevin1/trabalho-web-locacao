@@ -6,24 +6,24 @@ export const typesAlert = {
     error: "error"
 }
 
-export const displayAlert = (message, type) => {
+export const displayAlert = (type) => {
 
     if (type === typesAlert.warning) {
-        Alert.warning(message, {
+        Alert.warning('Warning.', {
             position: 'top-right',
             effect: 'slide'
         });
     }
 
     if (type === typesAlert.success) {
-        Alert.success(message, {
+        Alert.success('Sucesso!', {
             position: 'top-right',
             effect: 'slide'
         });
     }
 
     if (type === typesAlert.error) {
-        Alert.error(message, {
+        Alert.error('Erro.', {
             position: 'top-right',
             effect: 'slide'
         });

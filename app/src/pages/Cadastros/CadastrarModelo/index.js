@@ -41,11 +41,11 @@ export const CadastrarModeloView = () => {
                 console.log(values)
                 api.post(eps.cadastrarModelo, values).then((res) => {
                     console.log(res.data)
-                    if (res.data.success) {
-                        displayAlert(res.data.message, typesAlert.success);
+                    if (res.data) {
+                        displayAlert(typesAlert.success);
                         history.push('/visualizar/modelos');
                     } else {
-                        displayAlert(res.data.message, typesAlert.error);
+                        displayAlert(typesAlert.error);
                     }
                 }).catch((err) => {
                     displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
@@ -57,6 +57,7 @@ export const CadastrarModeloView = () => {
                 setTimeout(() => {
                     displayAlert.success("Cadastrado com sucesso!")
                     setSubmitting(false)
+                    history.push('/visualizar/modelos');
                 }, 1000)
             }}
 
@@ -77,7 +78,7 @@ export const CadastrarModeloView = () => {
                     handleSubmit,
                     isSubmitting
                 } = props;
-
+                {}
                 return(
                     <>
                         <Content toggle={toggle} isOpen={isOpen}>
@@ -103,7 +104,11 @@ export const CadastrarModeloView = () => {
                                                 </FormGroup>
                                                 <FormGroup className="col-md-6 col-sm-12 text-left">
                                                     <Label className='font-weight-bold'>Marca (*): </Label>
-                                                    <select className="form-control col-sm-12" name="marca">
+                                                    <select className="form-control col-sm-12"
+                                                            name="marca"
+                                                            value={values.marca}
+                                                            onChange={handleChange}
+                                                    >
                                                         <option value='default' onChange={handleChange}>Selecione a marca do modelo...</option>
                                                         {marcas.length > 0 ? marcas.map : null}
                                                         {

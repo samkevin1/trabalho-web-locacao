@@ -28,11 +28,11 @@ export const CadastrarClienteView = () => {
             }}
             onSubmit={(values) => {
                 api.post(eps.cadastrarCliente, values).then((res) => {
-                    if (res.data.success) {
-                        displayAlert(res.data.message, typesAlert.success);
-                        history.push('/visualizar/clientes', { user: res.data.user });
+                    if (res.data) {
+                        displayAlert(typesAlert.success);
+                        history.push('/visualizar/clientes');
                     } else {
-                        displayAlert(res.data.message, typesAlert.error);
+                        displayAlert(typesAlert.error);
                     }
                 }).catch((err) => {
                     displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
@@ -43,6 +43,7 @@ export const CadastrarClienteView = () => {
                 setTimeout(() => {
                     displayAlert.handleSuccess("Cadastrado com sucesso!")
                     setSubmitting(false)
+                    history.push('/visualizar/clientes');
                 }, 1000)
             }}
             validationSchema={validacaoForm}
@@ -141,4 +142,4 @@ export const CadastrarClienteView = () => {
     );
 }
 
-export default withRouter(CadastrarClienteView)
+export default withRouter(CadastrarClienteView);

@@ -10,7 +10,7 @@ export default Yup.object().shape({
     cpf: Yup.string()
         .required('Preencha este campo...')
         .max(14, 'Esse campo tem no máximo 14 caractéres...')
-        .min('Esse campo tem no mínimo 11 caratéres...'),
+        .min(11,'Esse campo tem no mínimo 11 caratéres...'),
     telefone: Yup.string()
         .notRequired()
         .max(45, 'Esse campo tem no máximo 45 caractéres...'),

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 
@@ -39,7 +41,7 @@ class Endereco(models.Model):
 
 
 class Locacao(models.Model):
-    dt_locacao = models.DateTimeField(auto_now_add=True)
+    dt_locacao = models.DateTimeField(default=datetime.now())
     dt_devolucao = models.DateTimeField(blank=True, null=True)
     km = models.IntegerField()
     valor_calcao = models.FloatField()

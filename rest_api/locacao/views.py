@@ -8,7 +8,7 @@ class get_all(generics.ListAPIView):
     serializer_class = serializers.LocacaoSerializer
 
 
-class cadastra(generics.CreateAPIView):
+class registraLocacao(generics.CreateAPIView):
     serializer_class = serializers.LocacaoSerializer
 
 
