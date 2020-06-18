@@ -45,10 +45,11 @@ export const CadastrarLocacaoView = () => {
         <Formik
             initialValues = {{
                 km:'',
-                valor_locacao:'',
+                valor_calcao:'',
                 valor_km:'',
                 bonus:'',
-                valor_total:''
+                cliente: 0,
+                automovel: 0
             }}
 
             onSubmit={(values) => {
@@ -56,11 +57,13 @@ export const CadastrarLocacaoView = () => {
                     console.log(res.data)
                     if (res.data.success) {
                         displayAlert(res.data.message, typesAlert.success);
-                        history.push('/', { user: res.data.user });
+                        history.push('/visualizar/locacoes');
                     } else {
                         displayAlert(res.data.message, typesAlert.error);
                     }
-                })
+                }).catch((err) => {
+                    displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
+                });
             }}
 
             handleSubmit = {({ setSubmitting }) => {
@@ -83,9 +86,7 @@ export const CadastrarLocacaoView = () => {
                 valor_total: Yup.number()
                     .required('Valor total é um campo obrigatório...')
             })}
-
         >
-
             {props => {
                 const {values,
                     touched,
@@ -100,8 +101,8 @@ export const CadastrarLocacaoView = () => {
                     <>
                         <Content toggle={toggle} isOpen={isOpen}>
                             <div className='mt-5 mb-3'>
-                                <h2>Cadastrar Locação</h2>
-                                <small className='text-muted font-weight-bold'>Campos obrigatórios (*)</small>
+                                <h2>Cadastro de locações</h2>
+                                <small className='text-muted font-weight-bold'>Campos obrigatórios possuem (*)</small>
                             </div>
 
                             <style>{'body { background-color: whitesmoke; }'}</style>
@@ -110,8 +111,8 @@ export const CadastrarLocacaoView = () => {
                                     <div className="card-body">
                                         <div className="col-md-12 col-sm-12 ">
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>KM (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>KM (*): </Label>
                                                     <Input name="km"
                                                            value= {values.km}
                                                            type="text"
@@ -119,8 +120,8 @@ export const CadastrarLocacaoView = () => {
                                                            onChange={handleChange} />
                                                     {errors.km && touched.km && <small className='text-danger font-weight-bold'>{errors.km}</small>}
                                                 </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Valor Locação (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Valor Locação (*): </Label>
                                                     <Input name="valor_locacao"
                                                            value= {values.valor_locacao}
                                                            type="text" placeholder="Insira o valor da locação..."
@@ -130,8 +131,8 @@ export const CadastrarLocacaoView = () => {
                                                 </FormGroup>
                                             </div>
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Valor KM (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Valor KM (*): </Label>
                                                     <Input name="valor_km"
                                                            value= {values.valor_km}
                                                            type="text"
@@ -140,8 +141,8 @@ export const CadastrarLocacaoView = () => {
                                                     />
                                                     {errors.valor_km && touched.valor_km && <small className='text-danger font-weight-bold'>{errors.valor_km}</small>}
                                                 </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Bônus</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Bônus: </Label>
                                                     <Input name="bonus"
                                                            value= {values.bonus}
                                                            type="text"
@@ -152,46 +153,36 @@ export const CadastrarLocacaoView = () => {
                                                 </FormGroup>
                                             </div>
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Valor Total (*)</Label>
-                                                    <Input name="valor_total"
-                                                           value= {values.valor_total}
-                                                           type="text"
-                                                           placeholder="Insira o valor total da locação..."
-                                                           onChange={handleChange}
-                                                    />
-                                                    {errors.valor_total && touched.valor_total && <small className='text-danger font-weight-bold'>{errors.valor_total}</small>}
-                                                </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Automóvel (*)</Label>
-                                                    <select className="form-control col-sm-12">
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Automóvel (*): </Label>
+                                                    <select className="form-control col-sm-12" name="automovel">
                                                         <option value='default' onChange={handleChange}>Selecione o automóvel da locação...</option>
                                                         {automoveis.length > 0 ? automoveis.map : null}
                                                         {
                                                             automoveis.length > 0 ? automoveis.map((automovel) => (
-                                                                <option key={automovel.id} value={automovel} onChange={handleChange}>{automovel.placa}</option>
+                                                                <option name="automovel" key={automovel.id} value={automovel.id} onChange={handleChange}>{automovel.placa}</option>
                                                             )) : null
                                                         }
                                                     </select>
                                                 </FormGroup>
-                                            </div>
-                                            <div className='row'>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Cliente (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Cliente (*): </Label>
                                                     <select className="form-control col-sm-12">
-                                                        <option value='default' onChange={handleChange}>Selecione o cliente da locação...</option>
+                                                        <option value='default' name="cliente" onChange={handleChange}>Selecione o cliente da locação...</option>
                                                         {clientes.length > 0 ? clientes.map : null}
                                                         {
                                                             clientes.length > 0 ? clientes.map((cliente) => (
-                                                                <option key={cliente.id} value={cliente} onChange={handleChange}>{cliente.cpf}</option>
+                                                                <option key={cliente.id} value={cliente.id} onChange={handleChange}>{cliente.nome}</option>
                                                             )) : null
                                                         }
                                                     </select>
                                                 </FormGroup>
                                             </div>
                                         </div>
-                                        <div className="col-md-12 col-sm-12pd-t-50">
-                                            <Button className="btn btn-primary btn-login ml-0" type="submit" disabled={isSubmitting}>Cadastrar</Button>
+                                        <div className="col-md-12 col-sm-12 mt-2">
+                                            <button className="btn btn-dark btn-block ml-0" type="submit" disabled={isSubmitting}>
+                                                <h6 className='font-weight-bold pl-2'>Cadastrar</h6>
+                                            </button>
                                         </div>
                                     </div>
                                 </Form>
