@@ -4,7 +4,8 @@ import api, { eps } from "../../../services/mainApi";
 import Content from '../../../components/content/Content';
 import { useHistory, withRouter } from "react-router-dom";
 import { Formik } from 'formik';
-import * as Yup from 'yup'
+import validacaoForm from './validacaoForm';
+
 import {
     Button,
     Form, FormGroup,
@@ -12,7 +13,6 @@ import {
 } from 'reactstrap';
 
 export const CadastrarAutomovelView = () => {
-
     const history = useHistory();
     const [modelos, setModelos] = useState([]);
     const [isOpen, setOpen] = useState(true);
@@ -37,58 +37,34 @@ export const CadastrarAutomovelView = () => {
                 chassi:'',
                 valor_locacao:'',
                 cor:'',
-                tipo_combustivel:''
+                tipo_combustivel:'',
+                modelo: 0
             }}
 
             onSubmit={(values) => {
                 api.post(eps.cadastrarAutomovel, values).then((res) => {
-                    console.log(res.data)
                     if (res.data.success) {
                         displayAlert(res.data.message, typesAlert.success);
-                        history.push('/', { user: res.data.user });
+                        history.push('/visualizar/automoveis', { user: res.data.user });
                     } else {
                         displayAlert(res.data.message, typesAlert.error);
                     }
-                })
+                }).catch((err) => {
+                    displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
+                });
             }}
 
-            handleSubmit = {({ setSubmitting }) => {
-                this.setState({ isLoggedIn: true });
+            handleSubmit = {({ setSubmitting } ) => {
                 setTimeout(() => {
                     displayAlert.handleSuccess("Cadastrado com sucesso!")
                     setSubmitting(false)
                 }, 1000)
             }}
-
-            validationSchema = {Yup.object().shape({
-                placa: Yup.string()
-                    .required('Placa é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...')
-                    .min(3, 'Plava deve ter no mínimo 3 caractéres'),
-                renavam: Yup.string()
-                    .required('Renavam é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...')
-                    .min(3, 'Plava deve ter no mínimo 3 caractéres'),
-                chassi: Yup.string()
-                    .required('Chassi é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...')
-                    .min(3, 'Plava deve ter no mínimo 3 caractéres'),
-                valor_locacao: Yup.number()
-                    .required('Valor Locação é um campo obrigatório.'),
-                cor: Yup.string()
-                    .required('Cor é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...')
-                    .min(3, 'Plava deve ter no mínimo 3 caractéres'),
-                tipo_combustivel: Yup.string()
-                    .notRequired()
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...')
-                    .min(3, 'Plava deve ter no mínimo 3 caractéres')
-            })}
-
+            validationSchema={validacaoForm}
         >
-
             {props => {
-                const {values,
+                const {
+                    values,
                     touched,
                     errors,
                     handleChange,
@@ -99,29 +75,28 @@ export const CadastrarAutomovelView = () => {
 
                 return(
                 <>
+                    <style>{'body { background-color: whitesmoke; }'}</style>
                     <Content toggle={toggle} isOpen={isOpen}>
                         <div className='mt-5 mb-3'>
-                            <h2>Cadastrar Automóvel</h2>
-                            <small className='text-muted font-weight-bold'>Campos obrigatórios (*)</small>
+                            <h2>Cadastro de automóveis</h2>
+                            <small className='text-muted font-weight-bold'>Campos obrigatórios possuem (*)</small>
                         </div>
-
-                        <style>{'body { background-color: whitesmoke; }'}</style>
                         <div className='card'>
                             <Form onSubmit={handleSubmit}>
                                 <div className="card-body">
                                     <div className="col-md-12 col-sm-12 ">
                                         <div className="row">
-                                            <FormGroup className="col-md-6 col-sm-12">
-                                                <Label className='font-weight-bold'>Placa (*)</Label>
+                                            <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                <Label className='font-weight-bold text-left'>Placa (*): </Label>
                                                 <Input name="placa"
                                                        value= {values.placa}
                                                        type="text"
                                                        placeholder="Insira a placa do automóvel..."
                                                        onChange={handleChange} />
-                                                {props.errors.placa && props.touched.placa && <small className='text-danger font-weight-bold'>{props.errors.placa}</small>}
+                                                {props.errors.placa && props.touched.placa && <small className='text-danger font-weight-bold text-left'>{props.errors.placa}</small>}
                                             </FormGroup>
-                                            <FormGroup className="col-md-6 col-sm-12">
-                                                <Label className='font-weight-bold'>Renavam (*)</Label>
+                                            <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                <Label className='font-weight-bold'>RENAVAM (*):</Label>
                                                 <Input name="renavam"
                                                        value= {values.renavam}
                                                        type="text" placeholder="Insira o renavam do automóvel..."
@@ -131,8 +106,8 @@ export const CadastrarAutomovelView = () => {
                                             </FormGroup>
                                         </div>
                                         <div className="row">
-                                            <FormGroup className="col-md-6 col-sm-12">
-                                                <Label className='font-weight-bold'>Chassi (*)</Label>
+                                            <FormGroup className="col-md-6 col-sm-12  text-left">
+                                                <Label className='font-weight-bold'>Chassi (*): </Label>
                                                 <Input name="chassi"
                                                        value= {values.chassi}
                                                        type="text"
@@ -141,8 +116,8 @@ export const CadastrarAutomovelView = () => {
                                                 />
                                                 {errors.chassi && touched.chassi && <small className='text-danger font-weight-bold'>{errors.chassi}</small>}
                                             </FormGroup>
-                                            <FormGroup className="col-md-6 col-sm-12">
-                                                <Label className='font-weight-bold'>Valor Locação (*)</Label>
+                                            <FormGroup className="col-md-6 col-sm-12  text-left">
+                                                <Label className='font-weight-bold'>Valor da locação do automóvel (*):</Label>
                                                 <Input name="valor_locacao"
                                                        value= {values.valor_locacao}
                                                        type="text"
@@ -153,8 +128,8 @@ export const CadastrarAutomovelView = () => {
                                             </FormGroup>
                                         </div>
                                         <div className="row">
-                                            <FormGroup className="col-md-6 col-sm-12">
-                                                <Label className='font-weight-bold'>Cor (*)</Label>
+                                            <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                <Label className='font-weight-bold'>Cor do automóvel (*):</Label>
                                                 <Input name="cor"
                                                        value= {values.cor}
                                                        type="text"
@@ -163,8 +138,8 @@ export const CadastrarAutomovelView = () => {
                                                 />
                                                 {errors.cor && touched.cor && <small className='text-danger font-weight-bold'>{errors.cor}</small>}
                                             </FormGroup>
-                                            <FormGroup className="col-md-6 col-sm-12">
-                                                <Label className='font-weight-bold'>Tipo de Combustível</Label>
+                                            <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                <Label className='font-weight-bold'>Tipo de combustível: </Label>
                                                 <Input name="tipo_combustivel"
                                                        value= {values.tipo_combustivel}
                                                        type="text"
@@ -175,9 +150,9 @@ export const CadastrarAutomovelView = () => {
                                             </FormGroup>
                                         </div>
                                         <div className="row">
-                                            <FormGroup className="col-md-6 col-sm-12">
-                                                <Label className='font-weight-bold'>Modelo (*)</Label>
-                                                <select className="form-control col-sm-12">
+                                            <FormGroup className="col-md-12 col-sm-12 text-left">
+                                                <Label className='font-weight-bold'>Modelo do automóvel (*):</Label>
+                                                <select className="form-control col-sm-12" value="modelo">
                                                     <option value='default' onChange={handleChange}>Selecione a modelo do automóvel...</option>
                                                     {
                                                         modelos.length > 0 ? modelos.map((modelo) => (
@@ -188,8 +163,10 @@ export const CadastrarAutomovelView = () => {
                                             </FormGroup>
                                         </div>
                                     </div>
-                                    <div className="col-md-12 col-sm-12pd-t-50">
-                                        <Button className="btn btn-primary btn-login ml-0" type="submit" disabled={isSubmitting}>Cadastrar</Button>
+                                    <div className="col-md-12 col-sm-12 mt-2">
+                                        <button className="btn btn-dark btn-block" type="submit" disabled={isSubmitting}> 
+                                            <h6 className='font-weight-bold pl-2'>Cadastrar</h6>
+                                        </button>
                                     </div>
                                 </div>
                             </Form>
@@ -202,4 +179,4 @@ export const CadastrarAutomovelView = () => {
     );
 }
 
-export default withRouter(CadastrarAutomovelView)
+export default withRouter(CadastrarAutomovelView);

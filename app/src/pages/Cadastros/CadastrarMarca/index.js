@@ -29,7 +29,7 @@ export const CadastrarMarcaView = () => {
                     console.log(res.data)
                     if (res.data.success) {
                         displayAlert(res.data.message, typesAlert.success);
-                        history.push('/', { user: res.data });
+                        history.push('/visualizar/marcas');
                     } else {
                         displayAlert(res.data.message, typesAlert.error);
                     }
@@ -66,8 +66,8 @@ export const CadastrarMarcaView = () => {
                     <>
                         <Content toggle={toggle} isOpen={isOpen}>
                             <div className='mt-5 mb-3'>
-                                <h2>Cadastrar Marca</h2>
-                                <small className='text-muted font-weight-bold'>Campos obrigatórios (*)</small>
+                                <h2>Cadastro de marcas</h2>
+                                <small className='text-muted font-weight-bold'>Campos obrigatórios possuem (*)</small>
                             </div>
 
                             <style>{'body { background-color: whitesmoke; }'}</style>
@@ -76,8 +76,8 @@ export const CadastrarMarcaView = () => {
                                     <div className="card-body">
                                         <div className="col-md-12 col-sm-12 ">
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Descrição (*)</Label>
+                                                <FormGroup className="col-md-12 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Descrição (*): </Label>
                                                     <Input name="descricao"
                                                            value= {values.descricao}
                                                            type="text"
@@ -87,8 +87,10 @@ export const CadastrarMarcaView = () => {
                                                 </FormGroup>
                                             </div>
                                         </div>
-                                        <div className="col-md-12 col-sm-12 pd-t-50">
-                                            <Button className="btn btn-primary btn-login ml-0" type="submit" disabled={isSubmitting}>Cadastrar</Button>
+                                        <div className="col-md-12 col-sm-12 mt-2">
+                                            <button className="btn btn-dark btn-block ml-0" type="submit" disabled={isSubmitting}>
+                                                <h6 className='font-weight-bold pl-2'>Cadastrar</h6>
+                                            </button>
                                         </div>
                                     </div>
                                 </Form>

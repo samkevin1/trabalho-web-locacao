@@ -1,6 +1,5 @@
 import Alert from 'react-s-alert';
 
-
 export const typesAlert = {
     warning: "warning",
     success: "success",
@@ -29,5 +28,4 @@ export const displayAlert = (message, type) => {
             effect: 'slide'
         });
     }
-
 }
