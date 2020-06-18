@@ -4,7 +4,8 @@ import api, { eps } from "../../../services/mainApi";
 import Content from '../../../components/content/Content';
 import { useHistory, withRouter } from "react-router-dom";
 import { Formik } from 'formik';
-import * as Yup from 'yup'
+import validacaoForm from './validacaoForm';
+
 import {
     Button,
     Form, FormGroup,
@@ -20,7 +21,6 @@ export const CadastrarEnderecoView = () => {
 
     useEffect((values)=>{
         api.get(eps.listarCliente, values).then((res)=>{
-            console.log(res.data);
             if(res.data){
                 setClientes(res.data);
             }else{
@@ -38,7 +38,8 @@ export const CadastrarEnderecoView = () => {
                 bairro:'',
                 cidade:'',
                 estado:'',
-                pais:''
+                pais:'',
+                cliente: 0
             }}
 
             onSubmit={(values) => {
@@ -46,11 +47,13 @@ export const CadastrarEnderecoView = () => {
                     console.log(res.data)
                     if (res.data.success) {
                         displayAlert(res.data.message, typesAlert.success);
-                        history.push('/', { user: res.data.user });
+                        history.push('/visualizar/enderecos');
                     } else {
                         displayAlert(res.data.message, typesAlert.error);
                     }
-                })
+                }).catch((err) => {
+                    displayAlert("Ocorreu um erro de conexão. Tente novamente mais tarde.", typesAlert.error);
+                });
             }}
 
             handleSubmit = {({ setSubmitting }) => {
@@ -60,29 +63,7 @@ export const CadastrarEnderecoView = () => {
                     setSubmitting(false)
                 }, 1000)
             }}
-
-            validationSchema = {Yup.object().shape({
-                logradouro: Yup.string()
-                    .required('Logradouro é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...'),
-                numero: Yup.number()
-                    .required('Número é um campo obrigatório...'),
-                cep: Yup.number()
-                    .required('CEP é um campo obrigatório...'),
-                bairro: Yup.string()
-                    .required('Bairro é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...'),
-                cidade: Yup.string()
-                    .required('Cidade é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...'),
-                estado: Yup.string()
-                    .required('Estado é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...'),
-                pais: Yup.string()
-                    .required('País é um campo obrigatório...')
-                    .max(45, 'Esse campo tem no máximo 45 caractéres...')
-            })}
-
+            validationSchema={validacaoForm}
         >
 
             {props => {
@@ -99,8 +80,8 @@ export const CadastrarEnderecoView = () => {
                     <>
                         <Content toggle={toggle} isOpen={isOpen}>
                             <div className='mt-5 mb-3'>
-                                <h2>Cadastrar Endereço</h2>
-                                <small className='text-muted font-weight-bold'>Campos obrigatórios (*)</small>
+                                <h2>Cadastro de endereços</h2>
+                                <small className='text-muted font-weight-bold'>Campos obrigatórios possuem (*)</small>
                             </div>
 
                             <style>{'body { background-color: whitesmoke; }'}</style>
@@ -109,8 +90,8 @@ export const CadastrarEnderecoView = () => {
                                     <div className="card-body">
                                         <div className="col-md-12 col-sm-12 ">
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Logradouro (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Logradouro (*): </Label>
                                                     <Input name="nome"
                                                            value= {values.logradouro}
                                                            type="text"
@@ -118,8 +99,8 @@ export const CadastrarEnderecoView = () => {
                                                            onChange={handleChange} />
                                                     {errors.logradouro && touched.logradouro && <small className='text-danger font-weight-bold'>{errors.logradouro}</small>}
                                                 </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Número (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Número (*): </Label>
                                                     <Input name="numero"
                                                            value= {values.numero}
                                                            type="text" placeholder="Insira o número do endereço..."
@@ -129,8 +110,8 @@ export const CadastrarEnderecoView = () => {
                                                 </FormGroup>
                                             </div>
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>CEP (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>CEP (*): </Label>
                                                     <Input name="cpf"
                                                            value= {values.cep}
                                                            type="text"
@@ -139,8 +120,8 @@ export const CadastrarEnderecoView = () => {
                                                     />
                                                     {errors.cep && touched.cep && <small className='text-danger font-weight-bold'>{errors.cep}</small>}
                                                 </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>CEP (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>CEP (*): </Label>
                                                     <Input name="cep"
                                                            value= {values.CEP}
                                                            type="text"
@@ -151,8 +132,8 @@ export const CadastrarEnderecoView = () => {
                                                 </FormGroup>
                                             </div>
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Bairro (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Bairro (*): </Label>
                                                     <Input name="bairro"
                                                            value= {values.cep}
                                                            type="text"
@@ -161,8 +142,8 @@ export const CadastrarEnderecoView = () => {
                                                     />
                                                     {errors.bairro && touched.bairro && <small className='text-danger font-weight-bold'>{errors.bairro}</small>}
                                                 </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Cidade (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Cidade (*): </Label>
                                                     <Input name="cidade"
                                                            value= {values.cidade}
                                                            type="text"
@@ -173,8 +154,8 @@ export const CadastrarEnderecoView = () => {
                                                 </FormGroup>
                                             </div>
                                             <div className="row">
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Estado (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Estado (*):</Label>
                                                     <Input name="estado"
                                                            value= {values.estado}
                                                            type="text"
@@ -183,8 +164,8 @@ export const CadastrarEnderecoView = () => {
                                                     />
                                                     {errors.estado && touched.estado && <small className='text-danger font-weight-bold'>{errors.estado}</small>}
                                                 </FormGroup>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>País (*)</Label>
+                                                <FormGroup className="col-md-6 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>País (*): </Label>
                                                     <Input name="pais"
                                                            value= {values.pais}
                                                            type="text"
@@ -195,22 +176,24 @@ export const CadastrarEnderecoView = () => {
                                                 </FormGroup>
                                             </div>
                                             <div className='row'>
-                                                <FormGroup className="col-md-6 col-sm-12">
-                                                    <Label className='font-weight-bold'>Cliente (*)</Label>
-                                                    <select className="form-control col-sm-12">
+                                                <FormGroup className="col-md-12 col-sm-12 text-left">
+                                                    <Label className='font-weight-bold'>Cliente (*): </Label>
+                                                    <select className="form-control col-sm-12" name="cliente">
                                                         <option value='default' onChange={handleChange}>Selecione o cliente da locação...</option>
                                                         {clientes.length > 0 ? clientes.map : null}
                                                         {
                                                             clientes.length > 0 ? clientes.map((cliente) => (
-                                                                <option key={cliente.id} value={cliente} onChange={handleChange}>{cliente.cpf}</option>
+                                                                <option key={cliente.id} value={cliente.id} onChange={handleChange}>{cliente.nome}</option>
                                                             )) : null
                                                         }
                                                     </select>
                                                 </FormGroup>
                                             </div>
                                         </div>
-                                        <div className="col-md-12 col-sm-12pd-t-50">
-                                            <Button className="btn btn-primary btn-login ml-0" type="submit" disabled={isSubmitting}>Cadastrar</Button>
+                                        <div className="col-md-12 col-sm-12 mt-52">
+                                            <button className="btn btn-dark btn-block ml-0" type="submit" disabled={isSubmitting}>
+                                                <h6 className='font-weight-bold pl-2'>Cadastrar</h6>
+                                            </button>
                                         </div>
                                     </div>
                                 </Form>
